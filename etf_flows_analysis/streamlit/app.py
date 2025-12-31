@@ -1,31 +1,87 @@
 import streamlit as st
 import pandas as pd
-from pathlib import Path
 
-st.set_page_config(page_title="ETF Flows Analysis", layout="wide")
+# -----------------------
+# CONFIG
+# -----------------------
+st.set_page_config(
+    page_title="ETF Flows Analysis – Case Study",
+    layout="wide"
+)
 
+DATA_PATH = "etf_flows_analysis/data/etf_flows_trend_analysis_2025.csv"
+
+# -----------------------
+# LOAD DATA
+# -----------------------
 st.title("ETF Flows Analysis – Case Study")
 
-# Debug info
-st.write("📁 Working directory:", Path.cwd())
-
-DATA_PATH = Path("etf_flows_analysis/data/etf_flows_trend_analysis_2025.csv")
-st.write("📄 CSV path:", DATA_PATH)
-
-if not DATA_PATH.exists():
-    st.error("❌ CSV file not found")
-    st.stop()
+st.write("📁 Working directory:", DATA_PATH)
 
 df = pd.read_csv(DATA_PATH)
 
 st.success("✅ CSV loaded correctly")
-st.write("Rows:", len(df))
+st.write(f"Rows: {len(df)}")
 
+# -----------------------
+# SHOW SAMPLE DATA
+# -----------------------
 st.subheader("Sample data")
-st.dataframe(df.head(10))
+st.dataframe(df.head())
 
-# Example simple visualization (no matplotlib)
-st.subheader("Net Flow Trend")
+# -----------------------
+# DATA PREP
+# -----------------------
+df["date"] = pd.to_datetime(df["date"])
+
+# -----------------------
+# NET FLOWS TREND (GLOBAL)
+# -----------------------
+st.subheader("Net Flow Trend (All ETFs)")
+
+flows_by_date = (
+    df.groupby("date")["net_flows_usd_m"]
+    .sum()
+    .reset_index()
+)
+
 st.line_chart(
-    df.groupby("date")["net_flow_usd"].sum()
+    data=flows_by_date,
+    x="date",
+    y="net_flows_usd_m"
+)
+
+# -----------------------
+# ETF SELECTOR
+# -----------------------
+st.subheader("Net Flows by ETF")
+
+selected_etf = st.selectbox(
+    "Select ETF ticker",
+    sorted(df["etf_ticker"].unique())
+)
+
+filtered_df = df[df["etf_ticker"] == selected_etf]
+
+st.line_chart(
+    data=filtered_df,
+    x="date",
+    y="net_flows_usd_m"
+)
+
+# -----------------------
+# REGION VIEW
+# -----------------------
+st.subheader("Net Flows by Region")
+
+region_agg = (
+    df.groupby("region")["net_flows_usd_m"]
+    .sum()
+    .reset_index()
+)
+
+st.bar_chart(
+    data=region_agg,
+    x="region",
+    y="net_flows_usd_m"
 )
