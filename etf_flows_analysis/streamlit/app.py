@@ -19,7 +19,7 @@ st.set_page_config(
 # -------------------------
 @st.cache_data
 def load_data():
-    return pd.read_csv("../data/etf_flows_2025_export.csv")
+    return pd.read_csv("etf_flows_analysis/data/etf_flows_trend_analysis_2025.csv")
 
 df = load_data()
 df["date"] = pd.to_datetime(df["date"])
