@@ -1,9 +1,8 @@
 # analysis.py
-# ETF Flows Analysis - Standalone Script
+# ETF Flows Trend Analysis 2025
 
 import pandas as pd
 import matplotlib.pyplot as plt
-import seaborn as sns
 
 # -------------------------
 # Load data
@@ -12,19 +11,16 @@ DATA_PATH = "etf_flows_analysis/data/etf_flows_trend_analysis_2025.csv"
 
 df = pd.read_csv(DATA_PATH)
 
-print("Data loaded successfully")
+print("Data loaded correctly")
 print(df.head())
 
 # -------------------------
-# Basic checks
+# Basic preparation
 # -------------------------
-print("\nColumns:")
-print(df.columns)
-
 df["date"] = pd.to_datetime(df["date"])
 
 # -------------------------
-# Ranking ETFs by daily net flow
+# Daily ranking using window logic
 # -------------------------
 df["daily_rank"] = (
     df.groupby("date")["net_flow"]
@@ -35,41 +31,29 @@ print("\nDaily ranking sample:")
 print(df.sort_values(["date", "daily_rank"]).head(10))
 
 # -------------------------
-# Top 3 ETFs per day
+# Aggregate total flows per ETF
 # -------------------------
-top_3_daily = df[df["daily_rank"] <= 3]
+total_flows = (
+    df.groupby("etf_ticker", as_index=False)["net_flow"]
+      .sum()
+      .sort_values("net_flow", ascending=False)
+)
 
-print("\nTop 3 ETFs per day:")
-print(top_3_daily.head(10))
+print("\nTotal net flows per ETF:")
+print(total_flows)
 
 # -------------------------
 # Plot net flows over time
 # -------------------------
 plt.figure(figsize=(12, 6))
-sns.lineplot(
-    data=df,
-    x="date",
-    y="net_flow",
-    hue="etf_ticker"
-)
-plt.title("ETF Net Flows Over Time")
-plt.xlabel("Date")
-plt.ylabel("Net Flow (USD M)")
-plt.tight_layout()
-plt.show()
 
-# -------------------------
-# Plot Top 3 ETFs only
-# -------------------------
-plt.figure(figsize=(12, 6))
-sns.lineplot(
-    data=top_3_daily,
-    x="date",
-    y="net_flow",
-    hue="etf_ticker"
-)
-plt.title("Top 3 ETFs by Daily Net Flow")
+for etf in df["etf_ticker"].unique():
+    subset = df[df["etf_ticker"] == etf]
+    plt.plot(subset["date"], subset["net_flow"], label=etf)
+
+plt.title("ETF Net Flows Over Time (2025)")
 plt.xlabel("Date")
 plt.ylabel("Net Flow (USD M)")
+plt.legend()
 plt.tight_layout()
 plt.show()
