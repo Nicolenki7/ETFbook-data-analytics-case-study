@@ -8,7 +8,7 @@ import seaborn as sns
 # -------------------------
 # Load data
 # -------------------------
-DATA_PATH = "../data/etf_flows_2025_export.csv"
+DATA_PATH = "etf_flows_analysis/data/etf_flows_trend_analysis_2025.csv"
 
 df = pd.read_csv(DATA_PATH)
 
