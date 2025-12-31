@@ -1,9 +1,8 @@
 # app.py
-# ETF Flows Trend Dashboard – Streamlit Cloud Safe Version
+# ETF Flows Trend Dashboard – Streamlit Native Charts (Cloud Safe)
 
 import streamlit as st
 import pandas as pd
-import matplotlib.pyplot as plt
 
 # -------------------------
 # Page configuration
@@ -31,10 +30,8 @@ st.title("ETF Net Flow Analysis – 2025")
 
 st.markdown(
     """
-    This dashboard analyzes **ETF net capital flows** to identify:
-    - Investor demand
-    - Liquidity trends
-    - Product attractiveness
+    Interactive analysis of **ETF net capital flows** to understand
+    investor demand, liquidity trends and product attractiveness.
     """
 )
 
@@ -44,7 +41,7 @@ st.markdown(
 etfs = sorted(df["etf_ticker"].unique())
 
 selected_etfs = st.multiselect(
-    "Select ETFs to display",
+    "Select ETF(s)",
     options=etfs,
     default=etfs[:3]
 )
@@ -52,25 +49,20 @@ selected_etfs = st.multiselect(
 filtered_df = df[df["etf_ticker"].isin(selected_etfs)]
 
 # -------------------------
-# Net flows chart
+# Net flows chart (native Streamlit)
 # -------------------------
 st.subheader("Net Flows Over Time")
 
-fig, ax = plt.subplots(figsize=(12, 5))
+pivot_df = (
+    filtered_df
+    .pivot(index="date", columns="etf_ticker", values="net_flow")
+    .sort_index()
+)
 
-for etf in filtered_df["etf_ticker"].unique():
-    subset = filtered_df[filtered_df["etf_ticker"] == etf]
-    ax.plot(subset["date"], subset["net_flow"], label=etf)
-
-ax.set_xlabel("Date")
-ax.set_ylabel("Net Flow (USD M)")
-ax.set_title("ETF Net Capital Flows")
-ax.legend()
-
-st.pyplot(fig)
+st.line_chart(pivot_df)
 
 # -------------------------
-# Ranking logic
+# Ranking logic (window function emulation)
 # -------------------------
 df["daily_rank"] = (
     df.groupby("date")["net_flow"]
@@ -90,13 +82,13 @@ st.dataframe(
 )
 
 # -------------------------
-# Key insights
+# Business insights
 # -------------------------
 st.markdown(
     """
     ### Key Insights
     - Positive net flows indicate **capital inflows and investor confidence**
-    - ETFs consistently ranked in the top 3 tend to show **higher liquidity**
-    - Sudden flow reversals may signal **market rebalancing or macro events**
+    - ETFs consistently ranked in the top positions tend to show **higher liquidity**
+    - Flow reversals often reflect **market rebalancing or macroeconomic events**
     """
 )
