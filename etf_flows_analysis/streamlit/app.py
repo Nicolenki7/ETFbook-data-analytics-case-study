@@ -1,9 +1,9 @@
 import streamlit as st
 import pandas as pd
 
-# -----------------------
-# CONFIG
-# -----------------------
+# ---------------------------------
+# STREAMLIT CONFIG
+# ---------------------------------
 st.set_page_config(
     page_title="ETF Flows Analysis – Case Study",
     layout="wide"
@@ -11,49 +11,48 @@ st.set_page_config(
 
 DATA_PATH = "etf_flows_analysis/data/etf_flows_trend_analysis_2025.csv"
 
-# -----------------------
+# ---------------------------------
 # LOAD DATA
-# -----------------------
+# ---------------------------------
 st.title("ETF Flows Analysis – Case Study")
 
-st.write("📁 Working directory:", DATA_PATH)
+st.write("📄 CSV path:", DATA_PATH)
 
 df = pd.read_csv(DATA_PATH)
 
 st.success("✅ CSV loaded correctly")
-st.write(f"Rows: {len(df)}")
+st.write("Rows:", len(df))
 
-# -----------------------
-# SHOW SAMPLE DATA
-# -----------------------
-st.subheader("Sample data")
-st.dataframe(df.head())
+# ---------------------------------
+# BASIC CHECK (NO FAIL)
+# ---------------------------------
+st.subheader("Detected columns")
+st.write(df.columns.tolist())
 
-# -----------------------
-# DATA PREP
-# -----------------------
+# ---------------------------------
+# PREP DATA
+# ---------------------------------
 df["date"] = pd.to_datetime(df["date"])
 
-# -----------------------
-# NET FLOWS TREND (GLOBAL)
-# -----------------------
+# ---------------------------------
+# GLOBAL NET FLOWS TREND
+# ---------------------------------
 st.subheader("Net Flow Trend (All ETFs)")
 
 flows_by_date = (
-    df.groupby("date")["net_flows_usd_m"]
+    df.groupby("date", as_index=False)["net_flows_usd_m"]
     .sum()
-    .reset_index()
 )
 
 st.line_chart(
-    data=flows_by_date,
+    flows_by_date,
     x="date",
     y="net_flows_usd_m"
 )
 
-# -----------------------
-# ETF SELECTOR
-# -----------------------
+# ---------------------------------
+# ETF-SPECIFIC VIEW
+# ---------------------------------
 st.subheader("Net Flows by ETF")
 
 selected_etf = st.selectbox(
@@ -61,27 +60,26 @@ selected_etf = st.selectbox(
     sorted(df["etf_ticker"].unique())
 )
 
-filtered_df = df[df["etf_ticker"] == selected_etf]
+etf_df = df[df["etf_ticker"] == selected_etf]
 
 st.line_chart(
-    data=filtered_df,
+    etf_df,
     x="date",
     y="net_flows_usd_m"
 )
 
-# -----------------------
-# REGION VIEW
-# -----------------------
+# ---------------------------------
+# REGION AGGREGATION
+# ---------------------------------
 st.subheader("Net Flows by Region")
 
-region_agg = (
-    df.groupby("region")["net_flows_usd_m"]
+region_flows = (
+    df.groupby("region", as_index=False)["net_flows_usd_m"]
     .sum()
-    .reset_index()
 )
 
 st.bar_chart(
-    data=region_agg,
+    region_flows,
     x="region",
     y="net_flows_usd_m"
 )
