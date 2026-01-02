@@ -1,5 +1,5 @@
 # ETFbook-data-analytics-case-study
-BigQuery SQL Analysis, Python, Streamlit Visualization
+BigQuery SQL Analysis, Python, Streamlit Visualization ( https://etfbook-data-analytics-case-study-rnpvem8jzssdlvt5appbcqu.streamlit.app/ )
 
 ## Objective
 Analyze ETF capital flows to identify investor behavior and product demand.
