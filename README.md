@@ -48,12 +48,14 @@ Copy
 ---
 
 ## ⚙️ Local Installation
-```bash
+
 git clone https://github.com/<your-user>/etfbook-data-analytics-case-study.git
 cd etfbook-data-analytics-case-study
 pip install -r requirements.txt
 streamlit run app.py
-Open http://localhost:8501 in your browser.
+
+Open [http://localhost:8501](http://localhost:8501) in your browser.
+
 🧪 Sample Data
 Table
 Copy
