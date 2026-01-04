@@ -56,35 +56,63 @@ streamlit run app.py
 
 Open [http://localhost:8501](http://localhost:8501) in your browser.
 
-🧪 Sample Data
-Table
-Copy
-date	etf_ticker	net_flows_usd_m	region
-2025-01-31	SPY	5,200	US
-2025-02-28	QQQ	5,100	US
-2025-03-31	IEMG	-800	EM
-Data are synthetic but mirror realistic institutional flows.
-📈 How to Use the Dashboard
-Select region(s) in the sidebar.
-Click ETF buttons to add / remove tickers instantly.
-Read KPIs for a 5-second executive summary.
-Explore trends, rankings and correlations in the charts.
-Export insights or screenshots directly from Plotly tool-bar.
-🚦 Performance Notes
-@st.cache_data prevents re-loading the CSV on every interaction.
-All computations are vectorised (Pandas/NumPy) → sub-second response.
-Plotly figures are built once and reused (no re-renders).
-🔍 Key Insights (Demo)
-US ETFs capture ~87 % of total flows (home bias / liquidity premium).
-QQQ shows Feb spike → possible earnings-season effect.
-Cross-ETF correlation < 0.35 → diversification still effective.
-🧩 Next Steps (Road-map)
-[ ] Connect to live yfinance or Bloomberg API
-[ ] Add Sharpe, Sortino, VaR analytics
-[ ] Monte-Carlo flow projections
-[ ] Dark-mode toggle
-🤝 Contributing
+## 🧪 Sample Data
+
+| date       | etf_ticker | net_flows_usd_m | region |
+|------------|------------|-----------------|--------|
+| 2025-01-31 | SPY        | 5,200           | US     |
+| 2025-02-28 | QQQ        | 5,100           | US     |
+| 2025-03-31 | IEMG       | -800            | EM     |
+
+*Data are synthetic but mirror realistic institutional flows.*
+
+---
+
+## 📈 How to Use the Dashboard
+
+1. Select region(s) in the sidebar.  
+2. Click ETF buttons to add / remove tickers instantly.  
+3. Read KPIs for a 5-second executive summary.  
+4. Explore trends, rankings and correlations in the charts.  
+5. Export insights or screenshots directly from Plotly tool-bar.
+
+---
+
+## 🚦 Performance Notes
+
+- `@st.cache_data` prevents re-loading the CSV on every interaction.  
+- All computations are vectorised (Pandas/NumPy) → sub-second response.  
+- Plotly figures are built once and reused (no re-renders).
+
+---
+
+## 🔍 Key Insights (Demo)
+
+- US ETFs capture ~87 % of total flows (home bias / liquidity premium).  
+- QQQ shows Feb spike → possible earnings-season effect.  
+- Cross-ETF correlation &lt; 0.35 → diversification still effective.
+
+---
+
+## 🧩 Next Steps (Road-map)
+
+- [ ] Connect to live **yfinance** or **Bloomberg API**  
+- [ ] Add Sharpe, Sortino, VaR analytics  
+- [ ] Monte-Carlo flow projections  
+- [ ] Dark-mode toggle
+
+---
+
+## 🤝 Contributing
+
 Feel free to open issues or submit PRs. For major changes please discuss first via issue.
-📄 License
+
+---
+
+## 📄 License
+
 MIT © 2025 – Open for personal and commercial use.
-🔗 Visualise now: https://etfbook-data-analytics-case.streamlit.app
+
+---
+
+**🔗 Visualise now**: [https://etfbook-data-analytics-case.streamlit.app](https://etfbook-data-analytics-case.streamlit.app)
