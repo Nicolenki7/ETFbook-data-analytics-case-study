@@ -2,163 +2,117 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+import plotly.express as px
+import plotly.graph_objects as go
+import numpy as np
+from datetime import datetime
 
 # -----------------------
 # CONFIG
 # -----------------------
 st.set_page_config(
     page_title="ETF Flows Analysis – Case Study",
+    page_icon="📊",
     layout="wide"
 )
 
-sns.set_theme(style="whitegrid")
-
-DATA_PATH = "etf_flows_analysis/data/etf_flows_trend_analysis_2025.csv"
+# Custom CSS
+st.markdown("""
+<style>
+    .metric-card {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .section-header {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #2a5298;
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+    }
+</style>
+""", unsafe_allow_html=True)
 
 # -----------------------
-# TITLE & INTRO
+# CARGAR DATOS (RUTA ORIGINAL)
+# -----------------------
+@st.cache_data
+def load_data():
+    # MANTENGO TU RUTA ORIGINAL
+    DATA_PATH = "etf_flows_analysis/data/etf_flows_trend_analysis_2025.csv"
+    df = pd.read_csv(DATA_PATH)
+    df["date"] = pd.to_datetime(df["date"])
+    return df
+
+df = load_data()
+
+# -----------------------
+# TÍTULO
 # -----------------------
 st.title("ETF Flows Analysis – Case Study")
-st.markdown(
-    """
-    **Objective:**  
-    Analyze ETF net flows to understand **capital allocation trends**,  
-    **investor sentiment**, and **regional dynamics** in the ETF market.
-    """
-)
+st.markdown("**Objective:** Analyze ETF net flows to understand capital allocation trends, investor sentiment, and regional dynamics")
 
 # -----------------------
-# LOAD DATA
+# KPIs MEJORADOS
 # -----------------------
-df = pd.read_csv(DATA_PATH)
-df["date"] = pd.to_datetime(df["date"])
+col1, col2, col3, col4 = st.columns(4)
 
-# -----------------------
-# DATA OVERVIEW
-# -----------------------
-st.subheader("Dataset Overview")
-st.markdown(
-    """
-    This dataset represents **simulated but realistic ETF net flow data (USD millions)**  
-    across multiple regions and ETFs.
-    """
-)
+total_flows = df["net_flows_usd_m"].sum()
+avg_flow = df["net_flows_usd_m"].mean()
+top_etf = df.groupby("etf_ticker")["net_flows_usd_m"].sum().idxmax()
+flow_volatility = df["net_flows_usd_m"].std()
 
-st.dataframe(df)
-
-# -----------------------
-# GLOBAL NET FLOWS TREND
-# -----------------------
-st.subheader("Global ETF Net Flow Trend")
-
-st.markdown(
-    """
-    **What this shows:**  
-    Aggregated net flows across all ETFs.  
-    Positive values indicate **net capital inflows**,  
-    negative values indicate **outflows**.
-    """
-)
-
-flows_by_date = (
-    df.groupby("date", as_index=False)["net_flows_usd_m"]
-    .sum()
-)
-
-fig, ax = plt.subplots(figsize=(10, 5))
-sns.lineplot(
-    data=flows_by_date,
-    x="date",
-    y="net_flows_usd_m",
-    marker="o",
-    ax=ax
-)
-
-ax.set_title("Total ETF Net Flows Over Time (USD Millions)")
-ax.set_xlabel("Date")
-ax.set_ylabel("Net Flows (USD M)")
-plt.xticks(rotation=45)
-
-st.pyplot(fig)
+with col1:
+    st.metric("Total Net Flows", f"${total_flows:,.0f}M")
+with col2:
+    st.metric("Average Flow", f"${avg_flow:,.0f}M")
+with col3:
+    st.metric("Top ETF", top_etf)
+with col4:
+    st.metric("Volatility", f"${flow_volatility:,.0f}M")
 
 # -----------------------
-# ETF-SPECIFIC ANALYSIS
+# VISUALIZACIONES MEJORADAS
 # -----------------------
-st.subheader("Net Flows by ETF")
+st.subheader("📈 Global ETF Net Flow Trend")
 
-st.markdown(
-    """
-    **Purpose:**  
-    Compare how individual ETFs attract or lose capital over time,  
-    helping identify **winners, laggards, and rotation effects**.
-    """
-)
+# Gráfico interactivo con Plotly
+flows_by_date = df.groupby("date", as_index=False)["net_flows_usd_m"].sum()
 
-selected_etf = st.selectbox(
-    "Select ETF",
-    sorted(df["etf_ticker"].unique())
-)
+fig = px.line(flows_by_date, x="date", y="net_flows_usd_m", 
+              title="Total ETF Net Flows Over Time",
+              markers=True)
+fig.update_traces(line_color="#1f77b4", line_width=3)
+st.plotly_chart(fig, use_container_width=True)
 
+# Análisis por ETF
+st.subheader("🔍 Individual ETF Analysis")
+selected_etf = st.selectbox("Select ETF", sorted(df["etf_ticker"].unique()))
 etf_df = df[df["etf_ticker"] == selected_etf]
 
-fig, ax = plt.subplots(figsize=(10, 5))
-sns.lineplot(
-    data=etf_df,
-    x="date",
-    y="net_flows_usd_m",
-    marker="o",
-    ax=ax
-)
+if not etf_df.empty:
+    fig_etf = px.line(etf_df, x="date", y="net_flows_usd_m",
+                      title=f"Net Flows – {selected_etf}",
+                      markers=True)
+    st.plotly_chart(fig_etf, use_container_width=True)
 
-ax.set_title(f"Net Flows – {selected_etf} (USD Millions)")
-ax.set_xlabel("Date")
-ax.set_ylabel("Net Flows (USD M)")
-plt.xticks(rotation=45)
+# Análisis regional
+st.subheader("🌍 Regional Analysis")
+region_flows = df.groupby("region", as_index=False)["net_flows_usd_m"].sum()
 
-st.pyplot(fig)
+fig_region = px.bar(region_flows, x="region", y="net_flows_usd_m",
+                    title="Net Flows by Region")
+st.plotly_chart(fig_region, use_container_width=True)
 
 # -----------------------
-# REGIONAL AGGREGATION
+# TAKEAWAYS
 # -----------------------
-st.subheader("Net Flows by Region")
-
-st.markdown(
-    """
-    **Insight:**  
-    Regional aggregation highlights **geographic allocation preferences**  
-    and shifts in institutional demand.
-    """
-)
-
-region_flows = (
-    df.groupby("region", as_index=False)["net_flows_usd_m"]
-    .sum()
-    .sort_values("net_flows_usd_m", ascending=False)
-)
-
-fig, ax = plt.subplots(figsize=(8, 5))
-sns.barplot(
-    data=region_flows,
-    x="region",
-    y="net_flows_usd_m",
-    ax=ax
-)
-
-ax.set_title("Total Net Flows by Region (USD Millions)")
-ax.set_xlabel("Region")
-ax.set_ylabel("Net Flows (USD M)")
-
-st.pyplot(fig)
-
-# -----------------------
-# FINAL TAKEAWAY
-# -----------------------
-st.subheader("Key Takeaways")
-
-st.markdown(
-    """
-    - ETF flows act as a **real-time proxy for investor confidence**
-    - Sustained inflows suggest **product strength and liquidity**
-    - Regional patterns reveal **macro and allocation trends**
-    """
-)
+st.subheader("💡 Key Takeaways")
+st.markdown("""
+- ETF flows act as a **real-time proxy for investor confidence**
+- Sustained inflows suggest **product strength and liquidity** 
+- Regional patterns reveal **macro and allocation trends**
+""")
