@@ -66,7 +66,7 @@ with c2:
     reg = df_f.groupby("region", as_index=False)["net_flows_usd_m"].sum()
     reg["%"] = reg["net_flows_usd_m"] / reg["net_flows_usd_m"].sum() * 100
     fig_reg = px.bar(reg, x="region", y="net_flows_usd_m", text=reg["%"].apply(lambda x: f"{x:.1f}%"), height=350)
-    fig_reg.update_traces(marker_color=["#636EFA", "#EF553B", "#00CC96", "#AB63FA"]))
+    fig_reg.update_traces(marker_color=["#636EFA", "#EF553B", "#00CC96", "#AB63FA"])
     st.plotly_chart(fig_reg, use_container_width=True)
 
 c3, c4 = st.columns(2)
