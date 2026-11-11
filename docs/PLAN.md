@@ -6,7 +6,7 @@
 - `notebook/analysis.py` (pandas + matplotlib), `streamlit/app.py` (Plotly) e informe generado en `docs/report.html`.
 
 ## Problemas detectados (verificados sobre el codigo versionado)
-1. `analysis.py` usa `df["net_flow"]`, pero la columna real se llama `net_flows_usd_m`: el script falla con `KeyError` en la primera agregacion.
+1. `analysis.py` agrupa por la columna `"net_flow"` — en `df.groupby("date")["net_flow"]` y en `df.groupby("etf_ticker", as_index=False)["net_flow"]` — pero la cabecera real del CSV es `date,etf_ticker,net_flows_usd_m,region`. El script falla con `KeyError` en la primera agregacion.
 2. `analysis.py` termina en `plt.show()`: no guarda ninguna figura, asi que no deja artefacto reproducible.
 3. Las rutas del CSV son relativas a la raiz del repo; ejecutar desde `notebook/` o `streamlit/` rompe la carga.
 4. El README promete volatilidad, correlaciones y analisis diario, pero el CSV tiene 3 fechas mensuales y el codigo no calcula ni volatilidad ni correlacion.
