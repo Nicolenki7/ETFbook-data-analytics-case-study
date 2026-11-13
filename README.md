@@ -97,7 +97,7 @@ The dashboard lives in `etf_flows_analysis/streamlit/app.py`, not at the reposit
 | Metric | Value |
 | :--- | :--- |
 | Rows in the versioned CSV | **12** (4 ETFs × 3 months) |
-| Ethernet flows, quarter | **+40,400 M USD** |
+| Net flows, quarter | **+40,400 M USD** |
 | US vs EM | **+42,300 M** / **−1,900 M** |
 | Monthly aggregate | **+12,600 / +14,800 / +13,000 M** |
 | Funds with a negative month | **1 of 4 (IEMG, every month)** |
