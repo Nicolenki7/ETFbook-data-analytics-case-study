@@ -9,6 +9,12 @@
 
 ---
 
+## 📊 Interactive report
+
+**[Open the interactive report →](https://nicolenki7.github.io/ETFbook-data-analytics-case-study/report.html)** — net flows by ETF and by month, rebuilt from `data/etf_flows_trend_analysis_2025.csv`.
+
+---
+
 ## 📋 Overview
 
 ETF flow analysis with SQL, Python and an interactive Streamlit front end. The three layers are deliberately separate: **SQL** answers the analytical questions, **Python** validates the numbers, and **Streamlit** exposes them without requiring SQL knowledge.
@@ -55,9 +61,11 @@ etf_flows_analysis/
 └── streamlit/app.py                         interactive dashboard
 src/
 ├── etfbook_charts.py                        the two charts in this README (SVG)
+├── build_report.py                          builds docs/report.html from the CSV
+├── report.py                                shared report generator (CSS + JS + helpers)
 └── svg_chart.py                             dependency-free SVG bar chart generator
 docs/img/*.svg                               charts used here
-docs/report.html                             one-page visual report
+docs/report.html                             one-page visual report (published with GitHub Pages)
 ```
 
 ---
@@ -72,7 +80,8 @@ python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 
 python src/etfbook_charts.py                 # regenerates docs/img/*.svg from the CSV
-python etf_flows_analysis/notebook/analysis.py
+python src/build_report.py                   # rebuilds docs/report.html
+examples/notebook/analysis.py                # Python validation of the SQL results
 streamlit run etf_flows_analysis/streamlit/app.py
 ```
 
@@ -125,6 +134,7 @@ Análisis de flujos de ETFs en tres capas: **SQL** para las preguntas analítica
 | Resource | URL |
 | :--- | :--- |
 | **Repository** | https://github.com/Nicolenki7/ETFbook-data-analytics-case-study |
+| **Interactive report** | https://nicolenki7.github.io/ETFbook-data-analytics-case-study/report.html |
 
 ---
 
@@ -136,7 +146,7 @@ MIT License
 
 ## 👤 Author
 
-**Nicolás Zalazar** | Senior Data Engineer
+**Nicolás Zalazar** | Data Analyst · Aspiring Data Engineer · Mallorca, Spain
 
 - GitHub: [@Nicolenki7](https://github.com/Nicolenki7)
 - LinkedIn: [nicolas-zalazar-63340923a](https://www.linkedin.com/in/nicolas-zalazar-63340923a)
