@@ -26,15 +26,7 @@ jobs:
           from nbformat.v4 import new_markdown_cell
 
           RUTA = 'notebooks/etfbook_flows_colab.ipynb'
-          TEXTO = '''[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Nicolenki7/ETFbook-data-analytics-case-study/blob/main/notebooks/etfbook_flows_colab.ipynb)
-
-> **En 30 segundos:** 4 ETFs y 3 meses: SPY se lleva el 40 % del flujo neto y 3 de 12 combinaciones ETF-mes cierran con salidas.
->
-> - SPY: 16.100 millones de USD (39,9 % del flujo del trimestre)
-> - 3 de 12 combinaciones ETF-mes en negativo
-> - Extracto trimestral: describe el periodo, no es tendencia
->
-> Los resultados ya están ejecutados: no hace falta correr nada para leerlos.'''
+          TEXTO = '[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Nicolenki7/ETFbook-data-analytics-case-study/blob/main/notebooks/etfbook_flows_colab.ipynb)\n\n> **En 30 segundos:** 4 ETFs y 3 meses: SPY se lleva el 40 % del flujo neto y 3 de 12 combinaciones ETF-mes cierran con salidas.\n>\n> - SPY: 16.100 millones de USD (39,9 % del flujo del trimestre)\n> - 3 de 12 combinaciones ETF-mes en negativo\n> - Extracto trimestral: describe el periodo, no es tendencia\n>\n> Los resultados ya están ejecutados: no hace falta correr nada para leerlos.'
 
           nb = nbformat.read(RUTA, as_version=4)
           primero = ''.join(nb.cells[0].source) if nb.cells else ''
